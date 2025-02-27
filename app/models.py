@@ -4,7 +4,7 @@ from django.db import models
 class ErrorLog(models.Model):
     codigo = models.IntegerField()  # Asegúrate de tener este campo
     mensaje = models.TextField()
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(default=models.functions.Now)  # Usa la fecha actual por defecto
 
     class Meta:
         db_table = 'errorlog'
