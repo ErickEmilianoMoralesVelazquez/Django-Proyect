@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Alumnos</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="container mt-4">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="text-center">Gestión de Alumnos</h2>
+
+          <!-- Formulario -->
+          <form id="alumnoForm" class="mb-4">
+            <input type="hidden" id="id" name="id" />
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" required />
+            </div>
+            <div class="mb-3">
+              <label for="apellido" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="apellido" required />
+            </div>
+            <div class="mb-3">
+              <label for="edad" class="form-label">Edad</label>
+              <input type="number" class="form-control" id="edad" required />
+            </div>
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo</label>
+              <input type="email" class="form-control" id="correo" required />
+            </div>
+            <div class="mb-3">
+              <label for="matricula" class="form-label">Matricula</label>
+              <input type="text" class="form-control" id="matricula" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="limpiarFormulario()"
+            >
+              Cancelar
+            </button>
+          </form>
+        </div>
+        <div class="col-6">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Edad</th>
+                <th>Correo</th>
+                <th>Matricula</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="alumnosTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de Alumnos -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarAlumnos();
+
+        document
+          .getElementById("alumnoForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            enviarFormulario();
+          });
+      });
+
+      function cargarAlumnos() {
+        fetch("http://localhost:8000/alumnos/api/")
+          .then((response) => response.json())
+          .then((data) => {
+            const tbody = document.getElementById("alumnosTableBody");
+            tbody.innerHTML = "";
+            console.log(data);
+            data.forEach((alumno) => {
+              tbody.innerHTML += `
+                            <tr>
+                                <td>${alumno.nombre}</td>
+                                <td>${alumno.apellido}</td>
+                                <td>${alumno.edad}</td>
+                                <td>${alumno.correo}</td>
+                                <td>${alumno.matricula}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editarAlumno(${alumno.id}, '${alumno.nombre}', '${alumno.apellido}', '${alumno.edad}', '${alumno.correo}', '${alumno.matricula}')">Editar</button>
+                                    <button class="btn btn-danger btn-sm mt-1" onclick="eliminarAlumno(${alumno.id})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+            });
+          })
+          .catch((error) =>
+            console.error("Error al cargar los alumnos:", error)
+          );
+      }
+
+      function editarAlumno(id, nombre, apellido, edad, correo, matricula) {
+        document.getElementById("id").value = id;
+        document.getElementById("nombre").value = nombre;
+        document.getElementById("apellido").value = apellido;
+        document.getElementById("edad").value = edad;
+        document.getElementById("correo").value = correo;
+        document.getElementById("matricula").value = matricula;
+      }
+
+      function enviarFormulario() {
+        const id = document.getElementById("id").value;
+        const alumno = {
+          nombre: document.getElementById("nombre").value,
+          apellido: document.getElementById("apellido").value,
+          edad: document.getElementById("edad").value,
+          correo: document.getElementById("correo").value,
+          matricula: document.getElementById("matricula").value,
+        };
+
+        let url = "http://localhost:8000/alumnos/api/";
+        let method = "POST";
+
+        if (id) {
+          url = `http://localhost:8000/alumnos/api/${id}/`;
+          method = "PUT";
+        }
+
+        fetch(url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(alumno),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            cargarAlumnos();
+            limpiarFormulario();
+          })
+          .catch((error) =>
+            console.error("Error al enviar el formulario:", error)
+          );
+      }
+
+      function eliminarAlumno(id) {
+        fetch(`http://localhost:8000/alumnos/api/${id}/`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Error ${response.status}: No se encontró el alumno o la API falló`
+              );
+            }
+            return response.text();
+          })
+          .then(() => {
+            cargarAlumnos(); // Recargar la tabla después de eliminar
+            limpiarFormulario();
+          })
+          .catch((error) =>
+            console.error("Error al eliminar el alumno:", error)
+          );
+      }
+
+      function limpiarFormulario() {
+        document.getElementById("id").value = "";
+        document.getElementById("alumnoForm").reset();
+      }
+    </script>
+  </body>
+</html>

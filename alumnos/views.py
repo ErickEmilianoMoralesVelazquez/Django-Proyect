@@ -12,3 +12,5 @@ class AlumnoViewSet(viewsets.ModelViewSet):
     renderer_classes = [JSONRenderer]
     # http_method_names = ['get', 'post', 'put', 'delete']
 
+def index(request):
+    return render(request, './morales_erick.html')

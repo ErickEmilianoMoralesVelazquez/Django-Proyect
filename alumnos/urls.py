@@ -7,4 +7,5 @@ router.register(r'api', AlumnoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('index/', index, name='index'),
 ]

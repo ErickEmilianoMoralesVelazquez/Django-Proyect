@@ -14,12 +14,3 @@ class Alumno(models.Model):
     def __str__(self):
         return self.nombre
     
-#     {
-#         "id": 1,
-#         "nombre": "Erick Emiliano",
-#         "apellido": "Morales Velazquez",
-#         "edad": 20,
-#         "matricula": "20223tn101",
-#         "correo": "20223tn101@utez.edu.mx"
-# }
-    
