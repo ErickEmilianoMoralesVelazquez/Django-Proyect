@@ -20,15 +20,20 @@ def lista_productos(request):
     return JsonResponse(data, safe=False)
 
 
+# def agregar_producto(request):
+#     if request.method == 'POST':
+#         form=productoForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('lista')
+#     else:
+#         form = productoForm()
+#     return render(request, 'agregar.html', {'form': form})
+
 def agregar_producto(request):
-    if request.method == 'POST':
-        form=productoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista')
-    else:
-        form = productoForm()
+    form = productoForm()
     return render(request, 'agregar.html', {'form': form})
+
 # Create your views here.
 
 #Funcion que registre sin recargar la pagina

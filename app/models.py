@@ -1,10 +1,10 @@
-# app/models.py
 from django.db import models
+from django.utils.timezone import now
 
 class ErrorLog(models.Model):
-    codigo = models.IntegerField()  # Asegúrate de tener este campo
+    codigo = models.IntegerField()
     mensaje = models.TextField()
-    fecha = models.DateTimeField(default=models.functions.Now)  # Usa la fecha actual por defecto
+    fecha = models.DateTimeField(auto_now_add=True)  # Se usa auto_now_add en lugar de default=now
 
     class Meta:
         db_table = 'errorlog'
