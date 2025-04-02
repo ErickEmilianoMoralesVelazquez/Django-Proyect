@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-8qh2we#@^q3b2!1h=em7-&u^#_%)5pdk25#6k4c8+m-)pm#4ap
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1', 'localhost',
+    '*'
 ]
 
 
@@ -48,9 +48,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'alumnos',
     'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,9 +60,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'Errorpages.urls'

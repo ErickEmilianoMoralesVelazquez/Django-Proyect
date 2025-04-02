@@ -1,94 +1,95 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
+from django.contrib.auth.forms import AuthenticationForm
 
-
+#Primer formulario
 class CustomUserCreationForm(UserCreationForm):
+    password1 = forms.CharField(
+        label='Contraseña',
+        widget = forms.PasswordInput(
+            attrs = {
+                'class':'form-control',
+                'pattern': '^(?=.*\d)(?=.*[A-Z])(?=.*[!#$%&?]).{8,}$',
+                'placeholder': 'Ingrese su contraseña',
+                'title': 'Necesitas definir una contraseña segura: Al menos un número.\nAl menos una letra mayúscula.\nAl menos un carácter especial (!#$%&?).\nMínimo de 8 caracteres en total.',
+                'required': True
+            }
+        )
+    )
+    ##password2
+    password2 = forms.CharField(
+        label='Repite tu Contraseña',
+        widget = forms.PasswordInput(
+            attrs = {
+                'class':'form-control',
+                'pattern': '^(?=.*\d)(?=.*[A-Z])(?=.*[!#$%&?]).{8,}$',
+                'placeholder': 'Repita su contraseña',
+                'title': 'Necesitas definir una contraseña segura',
+                'required': True
+            }
+        )
+    )
+
     class Meta:
         model = CustomUser
-        fields = [
-            'email', 'name', 'surname', 'control_number', 'age', 'tel',
-            'password1', 'password2'
-        ]
+        fields = ['email', 'name', 'surname', 'control_number', 'age', 'tel','password1', 'password2']
 
+        #Si quiero editar la forma de los inputs necesito widgets
         widgets = {
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Correo electrónico',
-                'required': True,
-            }),
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre',
-                'required': True,
-            }),
-            'surname': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Apellido',
-                'required': True,
-            }),
-            'control_number': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Número de control',
-                'required': True,
-            }),
-            'age': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Edad',
-                'required': True,
-            }),
-            'tel': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Teléfono',
-                'required': True,
-            }),
-            'password1': forms.PasswordInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Contraseña',
-                'required': True,
-            }),
-            'password2': forms.PasswordInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Confirmar contraseña',
-                'required': True,
-            }),
+            #Cada uno de los widgets del **MODELO**
+            'email': forms.EmailInput(
+                #Caracteristicas del elemento visual
+                attrs = {
+                    'class':'form-control',
+                    'required': True,
+                    'pattern': '^[a-zA-Z0-9]+@utez\.edu\.mx$',
+                    'title': 'Debes ingresar un correo electrónico valido de la UTEZ'
+                }
+            ),
+            'name': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'required': True
+                }
+            ),
+            'surname': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'required': True
+                }
+            ),
+            'control_number': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'required': True,
+                    'pattern': '^[0-9]{5}[a-zA-Z]{2}[0-9]{3}$',
+                    'title': 'Necesitas ingresar una matricula valida de la UTEZ',
+                    'maxlength': '20'
+                }
+            ),
+            'age': forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'required': True,
+                    'pattern': '^[0-9]+$',
+                    'title': 'Ingrese solo numeros',
+                    'max': '100',
+                    'min': '1'
+                }
+            ),
+            'tel': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'required': True,
+                    'pattern': '^[0-9\+-]{10,}$',
+                    'title': 'Ingrese solo numeros',
+                    'maxlength': '15'
+                }
+            )
         }
 
-# class CustomUserLoginForm(AuthenticationForm):
-#     pass
 
-import re
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate
-
+#Segundo formulario (inicio de sesión)
 class CustomUserLoginForm(AuthenticationForm):
-    username = forms.CharField(
-        label="Correo electrónico",
-        max_length=150
-    )
-    password = forms.CharField(
-        label="Contraseña",
-        widget=forms.PasswordInput
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data.get("username")  # Django usa "username" en AuthenticationForm
-        password = cleaned_data.get("password")
-
-        # Validar que el correo sea del dominio @utez.edu.mx
-        if email and not re.match(r"^[a-zA-Z0-9._%+-]+@utez\.edu\.mx$", email):
-            raise forms.ValidationError("El correo electrónico debe pertenecer al dominio @utez.edu.mx.")
-
-        # Validar que la contraseña tenga al menos 8 caracteres, un número y un símbolo especial
-        if password and not re.match(r"^(?=.*[0-9])(?=.*[!#$%&?]).{8,}$", password):
-            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo (!, #, $, %, & o ?).")
-
-        # Autenticar usuario
-        if email and password:
-            user = authenticate(username=email, password=password)
-            pass
-            if not user:
-                raise forms.ValidationError("Usuario o contraseña incorrectos.")
-
-        return cleaned_data
+    pass

@@ -45,3 +45,4 @@ def post_categoria(request):
         categoria.save()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
+

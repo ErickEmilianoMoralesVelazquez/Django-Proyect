@@ -5,5 +5,3 @@ class AlumnoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alumno
         fields = '__all__'
-
-        
